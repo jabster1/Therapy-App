@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 //#9C89B8 - soft purple
 
 import React from 'react';
-import { View, Text, Linking, TouchableOpacity, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView } from 'react-native';
 import BottomNavbar from './BottomNavbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,60 +20,104 @@ import teamMember1 from './images/home_page/team_1.png';
 import teamMember2 from './images/home_page/team_2.png';
 import teamMember3 from './images/home_page/team_3.png';
 import teamMember4 from './images/home_page/team_4.png';
+import krystal from './images/home_page/krystal.png';
 
 const HomeScreen = () => (
   <View style={styles.container}>
-    
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-    <View style={styles.headerContainer}>
-      <Image source={logo} style={styles.logo} />
-      <Text style={styles.header}>Welcome to Therapy Hour</Text>
       
-    </View>
-
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={openWebsite}>
-        <Text style={styles.buttonText}>Book Appointment</Text>
-      </TouchableOpacity>
-    </View>
-
-    <View style={styles.teamMembersContainer}>
-      <Text style={styles.teamHeader}>Our Team</Text>
-      <View style={styles.teamMembers}>
-
-        <View style={styles.teamRow}>
-          <View style={styles.teamMember}>
-            <Image source={teamMember1} style={styles.teamMemberImage} />
-            <Text style={styles.teamMemberName}>John Doe</Text>
-            <Text style={styles.teamMemberDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</Text>
-          </View>
-          <View style={styles.teamMember}>
-            <Image source={teamMember2} style={styles.teamMemberImage} />
-            <Text style={styles.teamMemberName}>Loris McCorvey</Text>
-            <Text style={styles.teamMemberDescription}>
-              Top Specialities
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.teamRow}>
-          <View style={styles.teamMember}>
-            <Image source={teamMember3} style={styles.teamMemberImage} />
-            <Text style={styles.teamMemberName}>Sage Bierster</Text>
-            <Text style={styles.teamMemberDescription}>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</Text>
-          </View>
-          <View style={styles.teamMember}>
-            <Image source={teamMember4} style={styles.teamMemberImage} />
-            <Text style={styles.teamMemberName}>Rebecca Johnson</Text>
-            <Text style={styles.teamMemberDescription}>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</Text>
-          </View>
-        </View>
-
+      <View style={styles.headerContainer}>
+        <Image source={logo} style={styles.logo} />
+        <Text style={styles.header}>Welcome to Therapy Hour</Text>
+        
       </View>
-    </View>
-    
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={openWebsite}>
+          <Text style={styles.buttonText}>Book Appointment</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.teamMembersContainer}>
+        <Text style={styles.teamHeader}>Our Team</Text>
+        <View style={styles.teamMembers}>
+        
+          <View style={styles.teamRow}>
+            <View style={styles.teamMember}>
+            <Image source={krystal} style={styles.teamMemberImage} />
+              <Text style={styles.teamMemberName}>Krystal Boza</Text>
+              <Text style={styles.teamMemberDescription}>
+                Specialties:
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Addiction
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Relationship Issues
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.teamRow}>
+            <View style={styles.teamMember}>
+              <Image source={teamMember1} style={styles.teamMemberImage} />
+              <Text style={styles.teamMemberName}>John Doe</Text>
+              <Text style={styles.teamMemberDescription}>
+                Specialties:
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Anxiety
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Depression
+              </Text>           
+            </View>
+            <View style={styles.teamMember}>
+              <Image source={teamMember2} style={styles.teamMemberImage} />
+              <Text style={styles.teamMemberName}>Loris McCorvey</Text>
+              <Text style={styles.teamMemberDescription}>
+                Specialties:
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Grief
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Trauma and PTSD
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.teamRow}>
+            <View style={styles.teamMember}>
+              <Image source={teamMember3} style={styles.teamMemberImage} />
+              <Text style={styles.teamMemberName}>Sage Bierster</Text>
+              <Text style={styles.teamMemberDescription}>
+                Specialties:
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Coping Skills
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Substance Use
+              </Text>            
+            </View>
+            <View style={styles.teamMember}>
+              <Image source={teamMember4} style={styles.teamMemberImage} />
+              <Text style={styles.teamMemberName}>Rebecca Johnson</Text>
+              <Text style={styles.teamMemberDescription}>
+                Specialties:
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Addiction
+                {"\n"}
+                <Text style={styles.bullet}>•</Text> Domestic Abuse
+                {"\n"}
+                {"\n"}
+                {"\n"}
+                {"\n"}
+                {"\n"}
+
+              </Text>            
+            </View>
+          </View>
+
+        </View>
+      </View> 
+    </ScrollView>
+
     <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
-  
   </View>
   
 );
@@ -87,15 +131,60 @@ const openWebsite = () => {
     .catch((err) => console.error('An error occurred:', err));
 };
 
-const JournalScreen = () => (
-  <View style={styles.container}>
-    <View style={styles.headerContainer}>
-      <Text style={styles.header}>My Journal</Text>
+
+
+const JournalScreen = () => {
+  // State to store the current journal entry
+  const [currentEntry, setCurrentEntry] = useState('');
+  // State to store past journal entries
+  const [pastEntries, setPastEntries] = useState([]);
+
+  // Function to add a new journal entry
+  const addEntry = () => {
+    if (currentEntry.trim() !== '') {
+      // Add the current entry to the beginning of the past entries array
+      setPastEntries([currentEntry, ...pastEntries]);
+      // Clear the input field
+      setCurrentEntry('');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>My Journal</Text>
+      </View>
+      
+      {/* Journal feature */}
+      <View style={styles.journalContainer}>
+        {/* Input box for new journal entry */}
+        <TextInput 
+          style={styles.input}
+          placeholder="Write your journal entry here"
+          multiline
+          value={currentEntry}
+          onChangeText={setCurrentEntry}
+        />
+        {/* Button to add a new entry */}
+        <Button title="Add Entry" onPress={addEntry} />
+        
+        {/* Display past journal entries */}
+        <ScrollView style={styles.scrollContainer}>
+          {pastEntries.map((entry, index) => (
+            <View key={index} style={styles.entryContainer}>
+              <Text style={styles.entryText}>{entry}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Bottom Navbar */}
+      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
     </View>
-    
-    <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
-  </View>
-);
+  );
+};
+
+
 
 
 const ResourcesScreen = () => (
@@ -126,6 +215,11 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 50,
+    height: 20,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -202,6 +296,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 120,
   },
+  bullet: {
+    fontWeight: 'bold',
+    color: '#C8A2C8',
+    marginRight: 5,
+  },
+  //jounal section
+  journalContainer: {
+    flex: 1,
+  },
+  input: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  entryContainer: {
+    marginBottom: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    backgroundColor: '#f9f9f9',
+  },
+  entryText: {
+    fontSize: 16,
+  },
+  //Resources section
 });
 
 export default App;
