@@ -9,11 +9,15 @@ import { StatusBar } from 'expo-status-bar';
 //#C8A2C8 - Lavender light purple
 //#9C89B8 - soft purple
 
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView } from 'react-native';
 import BottomNavbar from './BottomNavbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
 
 const logo = require('./images/logo.png');
 import teamMember1 from './images/home_page/team_1.png';
@@ -134,55 +138,142 @@ const openWebsite = () => {
 
 
 const JournalScreen = () => {
-  // State to store the current journal entry
-  const [currentEntry, setCurrentEntry] = useState('');
-  // State to store past journal entries
-  const [pastEntries, setPastEntries] = useState([]);
+  //this will have an initial value and the setInput is a function to update input Value
+  const [inputValue, setInputValue] = useState('');
+  const [headValue, setHeadValue] = useState('');
+  const [data, setData] = useState(null);
 
-  // Function to add a new journal entry
-  const addEntry = () => {
-    if (currentEntry.trim() !== '') {
-      // Add the current entry to the beginning of the past entries array
-      setPastEntries([currentEntry, ...pastEntries]);
-      // Clear the input field
-      setCurrentEntry('');
+
+  const handleInputChange = (text) => {
+    setInputValue(text);
+  };
+  const handleHeadChange = (text) => {
+    setHeadValue(text);
+  };
+
+  const handleButtonPress = async() => {
+    console.log('Input value:', inputValue);
+    console.log('Head Value: ', headValue);
+    // put headValue and inputValue into async storage it will store in a key-value pair
+    //also need to convert to JSON
+    //localStorage.setItem(headValue,inputValue)
+    if (inputValue && headValue){
+      // Example usage of AsyncStorage.setItem
+      await AsyncStorage.setItem(headValue, inputValue);
+      console.log('Data is saved')
+
+      //clear values
+      setInputValue('')
+      setHeadValue('')
     }
   };
 
-  return (
+  //Method to grab all keys from the database and put to data value as a dictionary of key value pairs saved
+  const loadFromStorage = async () => { 
+    try {
+      //const result = {};
+      const keys = await AsyncStorage.getAllKeys();
+      const result={};
+      for (const key of keys) {
+        const val = await AsyncStorage.getItem(key);
+        result[key] = val;
+      }
+      setData(result);
+    } catch (error) {
+      console.log("error OCCURANCE", error);
+      //return null
+    }
+  };
+
+  // Function to clear all data from AsyncStorage
+const clearAllData = async () => {
+  try {
+    await AsyncStorage.clear();
+    console.log('All data cleared from AsyncStorage.');
+  } catch (error) {
+    console.error('Error clearing AsyncStorage:', error);
+  }
+};
+
+// clear all the data in the async storage
+//clearAllData();
+
+const deleteItem = async (keyToDelete) => {
+  try {
+    await AsyncStorage.removeItem(keyToDelete);
+    console.log(`Key '${keyToDelete}' deleted from AsyncStorage.`);
+  } catch (error) {
+    console.error('Error deleting key from AsyncStorage:', error);
+  }
+};
+
+// in case I want to delete a key or entry
+//deleteItem('key');
+  
+  useEffect(() => {
+    loadFromStorage();
+  }, []); // Run only once when component mounts
+
+  //console.log('Rendered Data:', data);
+
+
+  return(
+
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>My Journal</Text>
-      </View>
-      
-      {/* Journal feature */}
-      <View style={styles.journalContainer}>
-        {/* Input box for new journal entry */}
-        <TextInput 
-          style={styles.input}
-          placeholder="Write your journal entry here"
-          multiline
-          value={currentEntry}
-          onChangeText={setCurrentEntry}
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>My Journal</Text>
+        </View>
+
+        {data && (
+          <View>
+            {Object.entries(data).map(([key, value]) => (
+              <><View key={key} style={styles.item}>
+                <Text style={styles.key}>{key} 
+                  {"\n"}
+                </Text>
+                <Text style={styles.value}>{value}
+                  {"\n"}
+                </Text>
+              </View><View key={key}>
+                  <TouchableOpacity style={styles.journalDel} onPress={() => deleteItem(key)}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                  <Text>
+                    {"\n"}
+                    {"\n"}
+                  </Text>  
+                </View></>
+              
+            ))}
+          </View>
+        )}
+
+        <TextInput
+          value={headValue}
+          onChangeText={handleHeadChange}
+          placeholder="Enter Entry Title"
+          style={styles.title_input}
         />
-        {/* Button to add a new entry */}
-        <Button title="Add Entry" onPress={addEntry} />
-        
-        {/* Display past journal entries */}
-        <ScrollView style={styles.scrollContainer}>
-          {pastEntries.map((entry, index) => (
-            <View key={index} style={styles.entryContainer}>
-              <Text style={styles.entryText}>{entry}</Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+        <TextInput 
+          value={inputValue}
+          onChangeText={handleInputChange}
+          placeholder="Enter text..."
+          style={styles.input}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+            <Text style={styles.buttonText}>New Entry</Text>
+          </TouchableOpacity>
+        </View>
 
       {/* Bottom Navbar */}
       <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
     </View>
   );
 };
+
+
 
 
 
@@ -301,7 +392,8 @@ const styles = StyleSheet.create({
     color: '#C8A2C8',
     marginRight: 5,
   },
-  //jounal section
+
+  //jounal section -----------------------------------------------
   journalContainer: {
     flex: 1,
   },
@@ -313,16 +405,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  entryContainer: {
+  title_input: {
+    height: 20,
     marginBottom: 10,
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
-    backgroundColor: '#f9f9f9',
+    borderRadius: 40,
   },
-  entryText: {
-    fontSize: 16,
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  key: {
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  value: {
+    marginLeft: 5,
+  },
+  journalDel: {
+    backgroundColor: '#C8A2C8',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10, 
+         
   },
   //Resources section
 });
