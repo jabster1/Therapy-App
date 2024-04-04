@@ -224,29 +224,30 @@ const deleteItem = async (keyToDelete) => {
           <Text style={styles.header}>My Journal</Text>
         </View>
 
-        {data && (
-          <View>
-            {Object.entries(data).map(([key, value]) => (
-              <><View key={key} style={styles.item}>
-                <Text style={styles.key}>{key} 
-                  {"\n"}
-                </Text>
-                <Text style={styles.value}>{value}
-                  {"\n"}
-                </Text>
-              </View><View key={key}>
-                  <TouchableOpacity style={styles.journalDel} onPress={() => deleteItem(key)}>
-                    <Text style={styles.buttonText}>Delete</Text>
-                  </TouchableOpacity>
-                  <Text>
-                    {"\n"}
-                    {"\n"}
-                  </Text>  
-                </View></>
-              
-            ))}
-          </View>
-        )}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {data && (
+            <View>
+              {Object.entries(data).map(([key, value]) => (
+                <><View key={key} style={styles.item}>
+                  <Text style={styles.key}>{key} {"\n"}</Text>
+                </View>
+                <View style={styles.item}>
+                  <Text style={styles.value}>{value} </Text>
+                  
+                </View><View key={key} style={styles.journalDelContainer}>
+                    <TouchableOpacity style={styles.journalDel} onPress={() => deleteItem(key)}>
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </TouchableOpacity>
+                    <Text>
+                      {"\n"}
+                      {"\n"}
+                    </Text>  
+                  </View></>
+                
+              ))}
+            </View>
+          )}
+        </ScrollView>
 
         <TextInput
           value={headValue}
@@ -265,6 +266,12 @@ const deleteItem = async (keyToDelete) => {
           <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
             <Text style={styles.buttonText}>New Entry</Text>
           </TouchableOpacity>
+          <Text>
+                {"\n"}
+                {"\n"}
+                {"\n"}
+                {"\n"}
+          </Text>    
         </View>
 
       {/* Bottom Navbar */}
@@ -416,21 +423,28 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center', //align horizontally
     marginVertical: 5,
   },
   key: {
     fontWeight: 'bold',
     marginRight: 5,
+    fontSize: 24,
   },
   value: {
     marginLeft: 5,
+    fontSize: 16,
   },
   journalDel: {
     backgroundColor: '#C8A2C8',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10, 
-         
+    width: 100, // Set a fixed width and height as it was taking up the whole page
+    height: 50, 
+    borderRadius: 35, // Make it circular
+    alignItems: 'center', // Center the content horizontally
+    justifyContent: 'center',
+  },
+  journalDelContainer: {
+    justifyContent: 'center',
   },
   //Resources section
 });
