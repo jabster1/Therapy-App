@@ -446,6 +446,7 @@ const styles = StyleSheet.create({
   journalDelContainer: {
     justifyContent: 'center',
   },
+  //k
   //Resources section
 });
 
