@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 //#9C89B8 - soft purple
 
 import React, { useState, useEffect} from 'react';
-import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView, Modal } from 'react-native';
 import BottomNavbar from './BottomNavbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -285,16 +285,76 @@ const deleteItem = async (keyToDelete) => {
 
 
 
-const ResourcesScreen = () => (
-  <View style={styles.container}>
-    <View style={styles.headerContainer}>
-      <Text style={styles.header}>Resources</Text>
+const ResourcesScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  //const [selectedDocument, setSelectedDocument] = useState(null);
+
+  // will open document in a popup
+  const openDocument = () => {
+    setModalVisible(true);
+  };
+
+  // will close popup
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  //const doc1 = require('./docs/doc1.pdf');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Important Links {"\n"} {"\n"}</Text>
+      <View style={styles.linkRow}>
+        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
+          <Text style={styles.linkText}>Link 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
+          <Text style={styles.linkText}>Link 2</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.linkRow}>
+        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
+          <Text style={styles.linkText}>Link 3</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
+          <Text style={styles.linkText}>Link 4</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text>
+        {"\n"} {"\n"}
+      </Text>
+      
+      
+      <Text style={[styles.header, styles.marginTop]}>Documents {"\n"} {"\n"}</Text>
+      <View style={styles.documentRow}>
+        <TouchableOpacity style={styles.documentButton} onPress={openDocument}>
+          <Text style={styles.buttonText}>Doc 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.documentButton} onPress={openDocument}>
+          <Text style={styles.buttonText}>Doc 2</Text>
+        </TouchableOpacity>
+      </View>s
+
+
+
+
+      {/* Modal for displaying documents */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>Document Content Here</Text>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
     </View>
-    
-    
-    <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
-  </View>
-);
+  );
+};
+
+
 
 const Stack = createStackNavigator();
 
@@ -312,6 +372,7 @@ const App = () => {
   );
 };
 
+//-------CSS STYLING ----------------------------------------------------------------------------
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
@@ -448,6 +509,69 @@ const styles = StyleSheet.create({
   },
   //k
   //Resources section
+  document: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#C8A2C8',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  linkRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10, 
+  },
+  linkButton: {
+    backgroundColor: '#C8A2C8',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: '45%', // Adjust width to fit two buttons in a row
+  },
+  linkText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center', 
+  },
+  documentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10, // Adjust vertical spacing between rows
+  },
+  documentButton: {
+    backgroundColor: '#C8A2C8',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: '45%', // Adjust width to fit two buttons in a row
+  },
+  documentText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center', // Center text horizontally within button
+  },
 });
 
 export default App;
