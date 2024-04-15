@@ -15,6 +15,9 @@ import BottomNavbar from './BottomNavbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+//import Pdf from 'react-native-pdf';
+//import Pdf from 'react-native-pdf-view';
+//import PDFView from 'react-native-pdf-view';
 
 
 
@@ -282,15 +285,18 @@ const deleteItem = async (keyToDelete) => {
 
 
 
+import negativeThoughts from './documents/challenging-negative-thoughts.pdf'
 
 
 
 const ResourcesScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  //const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documentUrl, setDocumentUrl] = useState('');
+
 
   // will open document in a popup
-  const openDocument = () => {
+  const openDocument = (url) => {
+    setDocumentUrl(url);
     setModalVisible(true);
   };
 
@@ -303,49 +309,38 @@ const ResourcesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Important Links {"\n"} {"\n"}</Text>
-      <View style={styles.linkRow}>
-        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
-          <Text style={styles.linkText}>Link 1</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
-          <Text style={styles.linkText}>Link 2</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.linkRow}>
-        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
-          <Text style={styles.linkText}>Link 3</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.linkButton} onPress={() => Linking.openURL('https://example.com')}>
-          <Text style={styles.linkText}>Link 4</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text>
-        {"\n"} {"\n"}
-      </Text>
-      
-      
       <Text style={[styles.header, styles.marginTop]}>Documents {"\n"} {"\n"}</Text>
       <View style={styles.documentRow}>
-        <TouchableOpacity style={styles.documentButton} onPress={openDocument}>
-          <Text style={styles.buttonText}>Doc 1</Text>
+        <TouchableOpacity style={styles.documentButton} onPress={() => openDocument('./documents/challenging-negative-thoughts.pdf')}>
+          <Text style={styles.buttonText}>Challenge Negative Thoughts</Text>
+          <Image source={require('./documents/negThoughts-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.documentButton} onPress={openDocument}>
-          <Text style={styles.buttonText}>Doc 2</Text>
+        <TouchableOpacity style={styles.documentButton}>
+          <Text style={styles.buttonText}>Core Beliefs</Text>
+          <Image source={require('./documents/coreBeliefs-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
-      </View>s
-
-
+      </View>
+      <View style={styles.documentRow}>
+        <TouchableOpacity style={styles.documentButton} >
+          <Text style={styles.buttonText}>Challenge Negative Thoughts</Text>
+          <Image source={require('./documents/gratitudeExercises-preview.png')} style={styles.documentPreview} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.documentButton}>
+          <Text style={styles.buttonText}>Core Beliefs</Text>
+          <Image source={require('./documents/gratitude-journal-preview.png')} style={styles.documentPreview} />
+        </TouchableOpacity>
+      </View>
+      
 
 
       {/* Modal for displaying documents */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <Modal visible={modalVisible} documentUrl={documentUrl} animationType="slide" transparent={true} >
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>Document Content Here</Text>
           <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
+        {/*<Pdf source={{ uri: documentUrl }} style={styles.pdf} />*/ }
         </View>
       </Modal>
 
@@ -561,16 +556,27 @@ const styles = StyleSheet.create({
   },
   documentButton: {
     backgroundColor: '#C8A2C8',
+    alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     width: '45%', // Adjust width to fit two buttons in a row
+  },
+  documentPreview: {
+    width: 150, // Adjust width as needed
+    height: 200, // Adjust height as needed
+    resizeMode: 'contain', // Maintain aspect ratio without cropping
+    borderRadius: 10, // Add rounded corners for visual appeal
   },
   documentText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center', // Center text horizontally within button
+  },
+  pdf: {
+    flex: 1,
+    width: '100%',
   },
 });
 
