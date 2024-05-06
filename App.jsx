@@ -10,14 +10,15 @@ import { StatusBar } from 'expo-status-bar';
 //#9C89B8 - soft purple
 
 import React, { useState, useEffect} from 'react';
-import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, Text, TextInput, Linking, TouchableOpacity, Button, Image, StyleSheet, ScrollView, Modal, Dimensions } from 'react-native';
 import BottomNavbar from './BottomNavbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import Pdf from 'react-native-pdf';
-//import Pdf from 'react-native-pdf-view';
-//import PDFView from 'react-native-pdf-view';
+//import { DocumentPicker } from 'expo-document-picker';
+import { PDFReader } from 'expo';
+//import * as FileSystem from 'expo-file-system';
+
 
 
 
@@ -285,70 +286,86 @@ const deleteItem = async (keyToDelete) => {
 
 
 
-import negativeThoughts from './documents/challenging-negative-thoughts.pdf'
-
+const documentScreenshots = {
+  "Challenge Negative Thoughts": require('./documents/negThoughts.png'),
+  "Core Beliefs": require('./documents/coreBeliefs.png'),
+  "Gratitude Exercises": require('./documents/gratitudeExercises.png'),
+  "Gratitude Journal": require('./documents/gratitudeJournal.png'),
+};
 
 
 const ResourcesScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [documentUrl, setDocumentUrl] = useState('');
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
-
-  // will open document in a popup
-  const openDocument = (url) => {
-    setDocumentUrl(url);
+  const openDocument = (documentName) => {
+    setSelectedDocument(documentScreenshots[documentName]);
     setModalVisible(true);
   };
 
-  // will close popup
   const closeModal = () => {
     setModalVisible(false);
+    setSelectedDocument(null);
   };
-
-  //const doc1 = require('./docs/doc1.pdf');
 
   return (
     <View style={styles.container}>
       <Text style={[styles.header, styles.marginTop]}>Documents {"\n"} {"\n"}</Text>
       <View style={styles.documentRow}>
-        <TouchableOpacity style={styles.documentButton} onPress={() => openDocument('./documents/challenging-negative-thoughts.pdf')}>
+        <TouchableOpacity
+          style={styles.documentButton}
+          onPress={() => openDocument("Challenge Negative Thoughts")}
+        >
           <Text style={styles.buttonText}>Challenge Negative Thoughts</Text>
           <Image source={require('./documents/negThoughts-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.documentButton}>
+        <TouchableOpacity
+          style={styles.documentButton}
+          onPress={() => openDocument("Core Beliefs")}
+        >
           <Text style={styles.buttonText}>Core Beliefs</Text>
           <Image source={require('./documents/coreBeliefs-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
       </View>
+
       <View style={styles.documentRow}>
-        <TouchableOpacity style={styles.documentButton} >
-          <Text style={styles.buttonText}>Challenge Negative Thoughts</Text>
+        <TouchableOpacity
+          style={styles.documentButton}
+          onPress={() => openDocument("Gratitude Exercises")}
+        >
+          <Text style={styles.buttonText}>Gratitude Exercises</Text>
           <Image source={require('./documents/gratitudeExercises-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.documentButton}>
-          <Text style={styles.buttonText}>Core Beliefs</Text>
+        <TouchableOpacity
+          style={styles.documentButton}
+          onPress={() => openDocument("Gratitude Journal")}
+        >
+          <Text style={styles.buttonText}>Gratitude Journal</Text>
           <Image source={require('./documents/gratitude-journal-preview.png')} style={styles.documentPreview} />
         </TouchableOpacity>
       </View>
-      
 
-
-      {/* Modal for displaying documents */}
-      <Modal visible={modalVisible} documentUrl={documentUrl} animationType="slide" transparent={true} >
+      {/* Modal for displaying the selected document */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>Document Content Here</Text>
+          {selectedDocument && (
+            <Image 
+              source={selectedDocument} 
+              style={styles.modalImage}
+            />
+          )}
           <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
-        {/*<Pdf source={{ uri: documentUrl }} style={styles.pdf} />*/ }
         </View>
       </Modal>
 
-      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}><BottomNavbar /></View>
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+        <BottomNavbar />
+      </View>
     </View>
   );
 };
-
 
 
 const Stack = createStackNavigator();
@@ -574,9 +591,11 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center', // Center text horizontally within button
   },
-  pdf: {
+  modalImage: {
     flex: 1,
     width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
 
